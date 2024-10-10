@@ -1,4 +1,6 @@
+use actix_web::{Responder, HttpRequest, HttpResponse};
 use serde::Serialize;
+
 use crate::to_do::ItemTypes;
 use crate::to_do::structs::base::Base;
 
@@ -26,10 +28,21 @@ impl ToDoItems{
         let pending_count: i8 = pending_array_buffer.len() as i8;
 
         return ToDoItems{
-            pending_item:pending_array_buffer,
-            done_items:done_array_buffer,
+            pending_item: pending_array_buffer,
+            done_items: done_array_buffer,
             pending_item_count: pending_count,
             done_item_count: done_count
         }
+    }
+}
+
+impl Responder for ToDoItems {
+    type Body = actix_web::body::BoxBody;
+
+    fn respond_to(self, _req: &HttpRequest) -> HttpResponse<Self::Body> {
+        let body = serde_json::to_string(&self).unwrap();
+        HttpResponse::Ok()
+            .content_type("application/json")
+            .body(body)
     }
 }
