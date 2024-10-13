@@ -14,8 +14,8 @@ pub struct ToDoItems{
 
 impl ToDoItems{
     pub fn new(input_items:Vec<ItemTypes>) -> ToDoItems{
-        let mut pending_array_buffer = Vec::new();
-        let mut done_array_buffer = Vec::new();
+        let mut pending_array_buffer:Vec<Base> = Vec::new();
+        let mut done_array_buffer:Vec<Base> = Vec::new();
 
         for item in input_items {
             match item{
@@ -40,7 +40,7 @@ impl Responder for ToDoItems {
     type Body = actix_web::body::BoxBody;
 
     fn respond_to(self, _req: &HttpRequest) -> HttpResponse<Self::Body> {
-        let body = serde_json::to_string(&self).unwrap();
+        let body: String = serde_json::to_string(&self).unwrap();
         HttpResponse::Ok()
             .content_type("application/json")
             .body(body)
