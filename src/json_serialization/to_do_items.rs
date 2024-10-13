@@ -6,7 +6,7 @@ use crate::to_do::structs::base::Base;
 
 #[derive(Serialize)]
 pub struct ToDoItems{
-    pub pending_item: Vec<Base>,
+    pub pending_items: Vec<Base>,
     pub done_items: Vec<Base>,
     pub pending_item_count: i8,
     pub done_item_count: i8
@@ -28,7 +28,7 @@ impl ToDoItems{
         let pending_count: i8 = pending_array_buffer.len() as i8;
 
         return ToDoItems{
-            pending_item: pending_array_buffer,
+            pending_items: pending_array_buffer,
             done_items: done_array_buffer,
             pending_item_count: pending_count,
             done_item_count: done_count
