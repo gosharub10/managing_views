@@ -1,23 +1,24 @@
+use crate::diesel;
+use diesel::prelude::*;
 use actix_web::{web, HttpResponse};
-
 use super::utils::return_state;
-use crate::state::read_file;
-
-use crate::to_do::to_do_factory;
+use crate::database::establish_connection;
 use crate::json_serialization::to_do_item::ToDoItem;
-use crate::processes::process_input;
+use crate::models::item::item::Item;
+use crate::schema::to_do;
 
 
 pub async fn delete(to_do_item : web::Json<ToDoItem>) -> HttpResponse{
-    let state = read_file(String::from("./state.json"));
-    let title = to_do_item.title.clone();
-    let status = to_do_item.status.clone();
+    let title_reference = to_do_item.title.clone();
 
-    match to_do_factory(&status, &title) {
-        Err(_item) => return  HttpResponse::BadRequest().json(
-            format!("{} not accepted", _item)),
-        Ok(item) => process_input(item, String::from("delete"), &state)
-    }
+    let mut connection = establish_connection();
+    let items = to_do::table
+    .filter(to_do::columns::title.eq(title_reference.as_str()))
+    .order(to_do::columns::id.asc())
+    .load::<Item>(&mut connection)
+    .unwrap();
+
+    let _ = diesel::delete(&items[0]).execute(&mut connection);
 
     return HttpResponse::Ok().json(return_state())
 }

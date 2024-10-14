@@ -1,0 +1,17 @@
+version: '3.9'
+
+services:
+
+  postgers:
+    
+    container_name: 'to_do_postgres'
+    
+    image: postgres:latest
+    restart: always
+    ports:
+      - 1234:5432
+    
+    environment:
+      - POSTGRES_USER=username
+      - POSTGRES_DB=to_do
+      - POSTGRES_PASSWORD=password
